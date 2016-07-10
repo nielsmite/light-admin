@@ -16,8 +16,10 @@
 package org.lightadmin.core.web.support;
 
 import org.springframework.data.mapping.PersistentEntity;
+import org.springframework.data.mapping.context.PersistentEntities;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.support.Repositories;
+import org.springframework.data.rest.core.mapping.RepositoryResourceMappings;
 import org.springframework.data.rest.core.mapping.ResourceMappings;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.support.Projector;
@@ -37,7 +39,7 @@ import static org.springframework.beans.PropertyAccessorFactory.forDirectFieldAc
 public class DynamicPersistentEntityResourceAssembler extends PersistentEntityResourceAssembler {
 
     public DynamicPersistentEntityResourceAssembler(PersistentEntityResourceAssembler resourceAssembler) {
-        super(repositories(resourceAssembler), entityLinks(resourceAssembler), projector(resourceAssembler), mappings(resourceAssembler));
+        super(entities(resourceAssembler), entityLinks(resourceAssembler), projector(resourceAssembler), mappings(resourceAssembler));
     }
 
     /**
@@ -67,7 +69,8 @@ public class DynamicPersistentEntityResourceAssembler extends PersistentEntityRe
     }
 
     private static Repositories repositories(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
-        return (Repositories) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("repositories");
+        final RepositoryResourceMappings mappings = (RepositoryResourceMappings) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("mappings");
+        return (Repositories) forDirectFieldAccess(mappings).getPropertyValue("repositories");
     }
 
     private static EntityLinks entityLinks(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
@@ -80,5 +83,9 @@ public class DynamicPersistentEntityResourceAssembler extends PersistentEntityRe
 
     private static ResourceMappings mappings(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
         return (ResourceMappings) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("mappings");
+    }
+
+    private static PersistentEntities entities(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
+        return (PersistentEntities) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("entities");
     }
 }
