@@ -81,7 +81,8 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
 
         PersistentEntityWrapper persistentEntityWrapper = persistentEntity(value, dynamicProperties, stringRepresentation, domainLink, managedDomainType, primaryKey);
 
-        PersistentEntityResource.Builder builder = PersistentEntityResource.build(persistentEntityWrapper, persistentEntity);
+        PersistentEntityResource.Builder builder = PersistentEntityResource.build(value, persistentEntity);
+        //PersistentEntityResource.Builder builder = PersistentEntityResource.build(persistentEntityWrapper, persistentEntity);
         for (Link link: links) {
             builder = builder.withLink(link);
         }
